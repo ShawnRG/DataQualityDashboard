@@ -8,26 +8,26 @@ pipeline {
     }
 
     stages {
-        stage('Check latest commit is tagged') {
-            steps {
-                script {
-                    try {
-                        sh 'git describe --exact-match'
-                        echo 'Latest commit is tagged, skipping...'
-                        env.SKIP = 'TRUE'
-                    } catch(Exception e) {
-                        env.SKIP = 'FALSE'
-                    }
-                }
-            }
-        }
+//         stage('Check latest commit is tagged') {
+//             steps {
+//                 script {
+//                     try {
+//                         sh 'git describe --exact-match'
+//                         echo 'Latest commit is tagged, skipping...'
+//                         env.SKIP = 'TRUE'
+//                     } catch(Exception e) {
+//                         env.SKIP = 'FALSE'
+//                     }
+//                 }
+//             }
+//         }
         stage('Tag latest changes') {
             steps {
-                when {
-                    expression {
-                        return env.SKIP == 'FALSE'
-                    }
-                }
+//                 when {
+//                     expression {
+//                         return env.SKIP == 'FALSE'
+//                     }
+//                 }
                 withCredentials([usernamePassword(credentialsId: 'github-credentials-shawn', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
                     script {
                         descriptionFileString = readFile encoding: 'UTF-8', file: 'DESCRIPTION'
@@ -43,11 +43,11 @@ pipeline {
         }
         stage('Wait for completed build') {
             steps {
-                when {
-                    expression {
-                        return env.SKIP == 'FALSE'
-                    }
-                }
+//                 when {
+//                     expression {
+//                         return env.SKIP == 'FALSE'
+//                     }
+//                 }
                 script {
                     remote_sha = sh (
                         script: "git rev-parse origin/main",
