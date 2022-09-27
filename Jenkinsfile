@@ -8,6 +8,11 @@ pipeline {
     }
 
     stages {
+        stage('Check latest commit not tagged') {
+            steps {
+                sh "git describe --exact-match"
+            }
+        }
         stage('Tag latest changes') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'github-credentials-shawn', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
@@ -22,8 +27,8 @@ pipeline {
                         sh "git add DESCRIPTION"
                         sh "git commit -m \"Created release ${newVersion}\""
                         sh "git tag -a v${newVersion} -m 'Version ${newVersion}'"
-                        sh "git push https://${env.GITHUB_USERNAME}:${env.GITHUB_TOKEN}@github.com/solventrix/DataQualityDashboard"
-                        sh "git push https://${env.GITHUB_USERNAME}:${env.GITHUB_TOKEN}@github.com/solventrix/DataQualityDashboard --tags"
+                        sh "git push https://${env.GITHUB_USERNAME}:${env.GITHUB_TOKEN}@github.com/ShawnRG/DataQualityDashboard"
+                        sh "git push https://${env.GITHUB_USERNAME}:${env.GITHUB_TOKEN}@github.com/ShawnRG/DataQualityDashboard --tags"
                     }
                 }
             }
