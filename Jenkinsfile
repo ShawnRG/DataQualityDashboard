@@ -34,6 +34,7 @@ pipeline {
                         oldVersion = (descriptionFileString =~ /Version: (.*)/)[0][1]
                         newVersion = getNewVersion(oldVersion)
                         newDescriptionFileString = descriptionFileString.replaceAll(/Version: (.*)/, "Version: " + newVersion)
+                        writeFile encoding: 'UTF-8', file: 'DESCRIPTION', text: "${newDescriptionFileString}"
                         sh "git add DESCRIPTION"
                         sh "git tag -a v${newVersion} -m 'Version ${newVersion}'"
                         sh "git push https://${env.GITHUB_USERNAME}:${env.GITHUB_TOKEN}@github.com/ShawnRG/DataQualityDashboard --tags"
