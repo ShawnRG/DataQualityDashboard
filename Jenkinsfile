@@ -8,11 +8,6 @@ pipeline {
     }
 
     stages {
-        stage('Check latest commit not tagged') {
-            steps {
-                sh "git describe --exact-match"
-            }
-        }
         stage('Tag latest changes') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'github-credentials-shawn', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
