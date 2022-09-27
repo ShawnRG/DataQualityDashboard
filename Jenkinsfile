@@ -13,7 +13,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'github-credentials-shawn', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
                     script {
                         descriptionFileString = readFile encoding: 'UTF-8', file: 'DESCRIPTION'
-                        oldVersion = (descriptionFileString =~ /Version: (.*)/gm)[0][1]
+                        oldVersion = (descriptionFileString =~ /Version: (.*)/)[0][1]
                         newVersion = getNewVersion(oldVersion)
                         newDescriptionFileString = descriptionFileString.replaceAll("/Version: (.*)/gm)", "Version: " + newVersion)
                         sh "git add DESCRIPTION"
