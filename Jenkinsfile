@@ -46,7 +46,12 @@ pipeline {
                     }
                 }
             }
+        }
 
+        stage('Run DQD build job') {
+            steps {
+                build job: 'DataQualityDashboard-Image', parameters: [string(name: 'VERSION', value: params.VERSION)]
+            }
         }
     }
 
