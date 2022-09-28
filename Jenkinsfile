@@ -15,6 +15,7 @@ pipeline {
                         descriptionFileString = readFile encoding: 'UTF-8', file: 'DESCRIPTION'
                         oldVersion = (descriptionFileString =~ /Version: (.*)/)[0][1]
                         newVersion = getNewVersion(oldVersion)
+                        env.NEW_VERSION = newVersion
                         echo "New version -> ${newVersion}"
                         newDescriptionFileString = descriptionFileString.replaceAll(/Version: .*/, "Version: " + newVersion)
                         echo newDescriptionFileString
@@ -31,17 +32,14 @@ pipeline {
         stage('Wait for completed build') {
             steps {
                 script {
-                    remote_sha = sh (
-                        script: "git rev-parse origin/main",
-                        returnStdout: true
-                    ).trim()
-                    timeout(time: 1, unit: 'MINUTES') {
+                    retry(3) {
                         waitUntil {
-                            r_package_sha = sh(
-                                script: "curl -X GET ${env.RSTUDIO_PACKAGE_MANAGER_HOST}__api__/repos/4/packages/DataQualityDashboard | python -c \"import sys,json; print json.load(sys.stdin)['remote_sha']\"",
+                            server_version = sh(
+                                script: "curl -X GET ${env.RSTUDIO_PACKAGE_MANAGER_HOST}__api__/repos/4/packages/DataQualityDashboard | python -c \"import sys,json; print json.load(sys.stdin)['version']\"",
                                 returnStdout: true
                             ).trim()
-                            return remote_sha == r_package_sha
+                            echo "Comparing server version (${server_version}) and new version (${env.NEW_VERSION})"
+                            return server_version == env.NEW_VERSION
                         }
                     }
                 }
