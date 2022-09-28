@@ -48,7 +48,7 @@ pipeline {
 
         stage('Run DQD build job') {
             steps {
-                build job: 'DataQualityDashboard-Image', parameters: [string(name: 'VERSION', value: params.VERSION)]
+                build job: 'DataQualityDashboard-Image', parameters: [string(name: 'VERSION', value: env.NEW_VERSION)]
             }
         }
     }
